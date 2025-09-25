@@ -1,104 +1,347 @@
 <!doctype html>
 <html lang="ru">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Подбор коробки</title>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Подбор коробки</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: "Inter", "Segoe UI", "Roboto", sans-serif;
+        line-height: 1.5;
+      }
 
-<h1>Подбор коробки</h1>
+      * {
+        box-sizing: border-box;
+      }
 
-<form id="f">
-  <label>Длина, мм <input id="l" type="number" min="1" required></label>
-  <label>Ширина, мм <input id="w" type="number" min="1" required></label>
-  <label>Высота, мм <input id="h" type="number" min="1" required></label>
-  <button type="submit">Рассчитать</button>
-</form>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        padding: 48px 16px 96px;
+        background: radial-gradient(circle at top, #161d3a 0%, #0b0d18 60%, #05060e 100%);
+        color: #e7ebff;
+      }
 
-<pre id="out">Введите размеры и нажмите «Рассчитать».</pre>
+      main {
+        width: min(960px, 100%);
+        background: linear-gradient(160deg, rgba(19, 24, 45, 0.96), rgba(9, 12, 28, 0.96));
+        border: 1px solid rgba(77, 96, 185, 0.2);
+        border-radius: 32px;
+        padding: clamp(32px, 6vw, 56px);
+        box-shadow: 0 30px 70px rgba(8, 11, 26, 0.65);
+        backdrop-filter: blur(18px);
+      }
 
-<table id="boxTable" border="1" cellpadding="6">
-  <thead>
-    <tr><th>#</th><th>Длина, мм</th><th>Ширина, мм</th></tr>
-  </thead>
-  <tbody></tbody>
-</table>
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 4vw, 2.8rem);
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: #f5f7ff;
+      }
 
-<script>
-  // Константы расчёта
-  const ADD_EACH_SIDE = 100;
-  const ADD_HEIGHT    = 225;
-  const MAX_HEIGHT    = 2450;
+      .subtitle {
+        margin-top: 12px;
+        font-size: 1rem;
+        color: #aab5ff;
+      }
 
-  // Набор коробок (Длина x Ширина)
-  const BOXES = [
-    {L:1250, W: 850},
-    {L:1800, W: 850},
-    {L:1800, W:1225},
-    {L:1800, W:1600},
-    {L:2350, W: 850},
-    {L:2350, W:1225},
-    {L:2350, W:1650},
-    {L:2350, W:1650},
-  ];
+      form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 24px;
+        margin-top: clamp(28px, 5vw, 40px);
+        align-items: end;
+      }
 
-  // Рендер таблицы коробок
-  (function renderBoxTable(){
-    const tbody = document.querySelector('#boxTable tbody');
-    tbody.innerHTML = '';
-    BOXES.forEach((b, i) => {
-      const tr = document.createElement('tr');
-      const L = Math.max(b.L,b.W), W = Math.min(b.L,b.W);
-      tr.innerHTML = `<td>${i+1}</td><td>${L}</td><td>${W}</td>`;
-      tbody.appendChild(tr);
-    });
-  })();
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.78rem;
+        color: #8893ff;
+      }
 
-  const f = document.getElementById('f');
-  const out = document.getElementById('out');
+      input[type="number"] {
+        width: 100%;
+        border-radius: 16px;
+        border: 1px solid rgba(91, 107, 205, 0.35);
+        background: rgba(12, 17, 36, 0.85);
+        padding: 16px 18px;
+        font-size: 1.05rem;
+        color: #f7f8ff;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        appearance: textfield;
+      }
 
-  f.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const srcL = parseInt(document.getElementById('l').value, 10);
-    const srcW = parseInt(document.getElementById('w').value, 10);
-    const srcH = parseInt(document.getElementById('h').value, 10);
+      input[type="number"]:focus {
+        outline: none;
+        border-color: rgba(149, 171, 255, 0.9);
+        box-shadow: 0 0 0 4px rgba(120, 140, 255, 0.25);
+      }
 
-    if (!Number.isFinite(srcL)||!Number.isFinite(srcW)||!Number.isFinite(srcH)||srcL<=0||srcW<=0||srcH<=0){
-      showOut('Введите положительные целые значения.');
-      return;
-    }
+      input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-inner-spin-button {
+        margin: 0;
+      }
 
-    const needL = srcL + ADD_EACH_SIDE;
-    const needW = srcW + ADD_EACH_SIDE;
-    const needH = roundUpTo(srcH + ADD_HEIGHT, 10);
+      button {
+        border: none;
+        border-radius: 18px;
+        padding: 16px 26px;
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #090d1c;
+        background: linear-gradient(140deg, #8ea4ff, #5f7dff 60%, #4a6bff 100%);
+        cursor: pointer;
+        box-shadow: 0 20px 35px rgba(19, 36, 89, 0.45);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
 
-    if (needH > MAX_HEIGHT) {
-      showOut(`Высота ${needH} мм превышает максимум ${MAX_HEIGHT} мм.\nИзмените входные размеры.`);
-      return;
-    }
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 24px 45px rgba(20, 40, 90, 0.55);
+      }
 
-    let best = null;
-    for (const b of BOXES) {
-      if (fits(b, needL, needW)) {
-        if (!best || area(b) < area(best) || (area(b) === area(best) && (b.L + b.W) < (best.L + best.W))) {
-          best = b;
+      button:active {
+        transform: translateY(0);
+        box-shadow: 0 14px 28px rgba(16, 30, 65, 0.45);
+      }
+
+      #out {
+        margin-top: clamp(28px, 6vw, 40px);
+        padding: 24px 28px;
+        border-radius: 20px;
+        border: 1px solid rgba(82, 101, 182, 0.28);
+        background: rgba(11, 15, 32, 0.9);
+        color: #f2f4ff;
+        min-height: 110px;
+        white-space: pre-wrap;
+        font-size: 1.05rem;
+        letter-spacing: 0.015em;
+        box-shadow: inset 0 0 0 1px rgba(63, 80, 147, 0.12);
+      }
+
+      table {
+        width: 100%;
+        margin-top: clamp(30px, 6vw, 44px);
+        border-collapse: collapse;
+        border-radius: 22px;
+        overflow: hidden;
+        background: rgba(9, 13, 30, 0.92);
+        box-shadow: inset 0 0 0 1px rgba(73, 87, 148, 0.18);
+      }
+
+      thead {
+        background: linear-gradient(135deg, rgba(61, 79, 162, 0.45), rgba(38, 52, 120, 0.45));
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.74rem;
+        color: #a5b6ff;
+      }
+
+      th,
+      td {
+        padding: 18px 22px;
+        text-align: left;
+        border-bottom: 1px solid rgba(56, 72, 134, 0.3);
+        font-size: 0.98rem;
+      }
+
+      tbody tr:hover {
+        background: rgba(20, 27, 58, 0.75);
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      tbody tr.is-selected {
+        background: rgba(74, 107, 255, 0.18);
+      }
+
+      .table-note {
+        margin-top: 16px;
+        font-size: 0.85rem;
+        color: rgba(168, 180, 255, 0.75);
+      }
+
+      @media (max-width: 620px) {
+        form {
+          grid-template-columns: 1fr;
+        }
+
+        button {
+          width: 100%;
+        }
+
+        th,
+        td {
+          padding: 14px 18px;
         }
       }
-    }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Подбор коробки</h1>
+      <p class="subtitle">Введите габариты изделия, чтобы подобрать оптимальную коробку из каталога.</p>
+      <form id="calcForm" novalidate>
+        <label>Длина, мм
+          <input id="length" name="length" type="number" min="1" step="1" required>
+        </label>
+        <label>Ширина, мм
+          <input id="width" name="width" type="number" min="1" step="1" required>
+        </label>
+        <label>Высота, мм
+          <input id="height" name="height" type="number" min="1" step="1" required>
+        </label>
+        <button type="submit">Рассчитать</button>
+      </form>
+      <pre id="out" role="status">Введите размеры и нажмите «Рассчитать».</pre>
+      <table id="boxTable">
+        <thead>
+          <tr><th>#</th><th>Длина, мм</th><th>Ширина, мм</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <p class="table-note">Значения длины и ширины указаны с учётом ориентации «длина ≥ ширина».</p>
+    </main>
 
-    if (!best) {
-      const outLmin = Math.max(needL, needW);
-      const outWmin = Math.min(needL, needW);
-      showOut(`Подходящая коробка не найдена.\nМинимум по расчёту: ${outLmin} x ${outWmin} x ${needH} мм (Д x Ш x В).`);
-      return;
-    }
+    <script>
+      // Константы расчёта
+      const ADD_EACH_SIDE = 100;
+      const ADD_HEIGHT = 225;
+      const MAX_HEIGHT = 2450;
 
-    const outL = Math.max(best.L, best.W);
-    const outW = Math.min(best.L, best.W);
-    showOut(`Подходящая коробка: ${outL} x ${outW} x ${needH} мм (Д x Ш x В).`);
-  });
+      // Набор коробок (Длина x Ширина)
+      const BOXES = [
+        { L: 1250, W: 850 },
+        { L: 1800, W: 850 },
+        { L: 1800, W: 1225 },
+        { L: 1800, W: 1600 },
+        { L: 2350, W: 850 },
+        { L: 2350, W: 1225 },
+        { L: 2350, W: 1650 },
+        { L: 2350, W: 1950 }
+      ];
 
-  function showOut(text){ out.textContent = text; }
-  function area(b){ return b.L*b.W; }
-  function fits(b,l,w){ return (b.L>=l&&b.W>=w)||(b.L>=w&&b.W>=l); }
-  function roundUpTo(v,step){ if(step<=0)step=10; if(v<=0)return step; const r=v%step; return r===0?v:v+(step-r); }
-</script>
+      const form = document.getElementById("calcForm");
+      const out = document.getElementById("out");
+      const tbody = document.querySelector("#boxTable tbody");
+
+      renderBoxTable();
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const srcL = readPositiveInteger(document.getElementById("length"));
+        const srcW = readPositiveInteger(document.getElementById("width"));
+        const srcH = readPositiveInteger(document.getElementById("height"));
+
+        if (srcL === null || srcW === null || srcH === null) {
+          showOut("Введите положительные целые значения.");
+          highlightRow();
+          return;
+        }
+
+        const needL = srcL + ADD_EACH_SIDE;
+        const needW = srcW + ADD_EACH_SIDE;
+        const needH = roundUpTo(srcH + ADD_HEIGHT, 10);
+
+        if (needH > MAX_HEIGHT) {
+          showOut(`Высота ${needH} мм превышает максимум ${MAX_HEIGHT} мм.\nИзмените входные размеры.`);
+          highlightRow();
+          return;
+        }
+
+        let best = null;
+        for (const box of BOXES) {
+          if (fits(box, needL, needW)) {
+            if (
+              !best ||
+              area(box) < area(best) ||
+              (area(box) === area(best) && box.L + box.W < best.L + best.W)
+            ) {
+              best = box;
+            }
+          }
+        }
+
+        if (!best) {
+          const outLmin = Math.max(needL, needW);
+          const outWmin = Math.min(needL, needW);
+          showOut(
+            `Подходящая коробка не найдена.\nМинимум по расчёту: ${outLmin} x ${outWmin} x ${needH} мм (Д x Ш x В).`
+          );
+          highlightRow();
+          return;
+        }
+
+        const outL = Math.max(best.L, best.W);
+        const outW = Math.min(best.L, best.W);
+        showOut(`Подходящая коробка: ${outL} x ${outW} x ${needH} мм (Д x Ш x В).`);
+        highlightRow(best);
+      });
+
+      function renderBoxTable() {
+        tbody.innerHTML = "";
+        BOXES.forEach((box, index) => {
+          const L = Math.max(box.L, box.W);
+          const W = Math.min(box.L, box.W);
+          const tr = document.createElement("tr");
+          tr.dataset.l = String(L);
+          tr.dataset.w = String(W);
+          tr.innerHTML = `<td>${index + 1}</td><td>${L}</td><td>${W}</td>`;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function showOut(text) {
+        out.textContent = text;
+      }
+
+      function highlightRow(box) {
+        const rows = tbody.querySelectorAll("tr");
+        rows.forEach((row) => {
+          const isMatch =
+            box &&
+            row.dataset.l === String(Math.max(box.L, box.W)) &&
+            row.dataset.w === String(Math.min(box.L, box.W));
+          row.classList.toggle("is-selected", Boolean(isMatch));
+        });
+      }
+
+      function readPositiveInteger(input) {
+        const value = Number(input.value.trim());
+        if (!Number.isInteger(value) || value <= 0) {
+          return null;
+        }
+        return value;
+      }
+
+      function area(box) {
+        return box.L * box.W;
+      }
+
+      function fits(box, l, w) {
+        return (box.L >= l && box.W >= w) || (box.L >= w && box.W >= l);
+      }
+
+      function roundUpTo(value, step) {
+        if (step <= 0) step = 10;
+        if (value <= 0) return step;
+        const remainder = value % step;
+        return remainder === 0 ? value : value + (step - remainder);
+      }
+    </script>
+  </body>
 </html>
