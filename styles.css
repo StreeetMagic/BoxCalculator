@@ -233,8 +233,6 @@ button[type="submit"]:active {
   fill: var(--text-primary);
   font-size: 0.9rem;
   font-weight: 600;
-  text-anchor: middle;
-  dominant-baseline: middle;
   paint-order: stroke fill;
   stroke: rgba(12, 17, 27, 0.75);
   stroke-width: 4px;

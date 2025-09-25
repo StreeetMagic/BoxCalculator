@@ -267,12 +267,36 @@ function renderIllustration(state) {
   const dimensionsGroup = createSvgElement('g', { class: 'dimensions' });
   const frontLeftBottom = toScreen(0, 0, 0);
   const frontRightBottom = toScreen(state.outer.length, 0, 0);
-  const backLeftBottom = toScreen(0, state.outer.width, 0);
+  const backRightBottom = toScreen(state.outer.length, state.outer.width, 0);
   const frontRightTop = toScreen(state.outer.length, 0, state.outer.height);
 
-  drawDimension(dimensionsGroup, frontLeftBottom, frontRightBottom, { dy: 26 }, `Длина ${formatNumber(state.outer.length)} мм`);
-  drawDimension(dimensionsGroup, frontLeftBottom, backLeftBottom, { dx: -28, dy: 18 }, `Ширина ${formatNumber(state.outer.width)} мм`);
-  drawDimension(dimensionsGroup, frontRightBottom, frontRightTop, { dx: 30, labelDy: -12 }, `Высота ${formatNumber(state.outer.height)} мм`);
+  drawDimension(
+    dimensionsGroup,
+    frontLeftBottom,
+    frontRightBottom,
+    { dy: 34, labelDx: -32, labelDy: -14, labelAnchor: 'start' },
+    `Длина ${formatNumber(state.outer.length)} мм`,
+  );
+  drawDimension(
+    dimensionsGroup,
+    frontRightBottom,
+    backRightBottom,
+    { dx: 34, dy: 8, labelDx: 16, labelDy: -6, labelAnchor: 'start' },
+    `Ширина ${formatNumber(state.outer.width)} мм`,
+  );
+  drawDimension(
+    dimensionsGroup,
+    frontRightBottom,
+    frontRightTop,
+    {
+      dx: 46,
+      labelDy: 0,
+      labelAnchor: 'middle',
+      labelBaseline: 'middle',
+      rotation: -90,
+    },
+    `Высота ${formatNumber(state.outer.height)} мм`,
+  );
 
   illustrationLayer.appendChild(dimensionsGroup);
 }
@@ -335,7 +359,15 @@ function getBoxPoints(dims, offset, toScreen) {
 }
 
 function drawDimension(group, start, end, options, label) {
-  const { dx = 0, dy = 0, labelDx = 0, labelDy = -8 } = options || {};
+  const {
+    dx = 0,
+    dy = 0,
+    labelDx = 0,
+    labelDy = -8,
+    labelAnchor = 'middle',
+    labelBaseline = 'middle',
+    rotation = null,
+  } = options || {};
   const x1 = start.x + dx;
   const y1 = start.y + dy;
   const x2 = end.x + dx;
@@ -351,12 +383,20 @@ function drawDimension(group, start, end, options, label) {
     'marker-end': 'url(#dimArrow)',
   });
 
+  const textX = (start.x + end.x) / 2 + dx + labelDx;
+  const textY = (start.y + end.y) / 2 + dy + labelDy;
   const text = createSvgElement('text', {
-    x: ((start.x + end.x) / 2 + dx + labelDx).toFixed(2),
-    y: ((start.y + end.y) / 2 + dy + labelDy).toFixed(2),
+    x: textX.toFixed(2),
+    y: textY.toFixed(2),
     class: 'dimension-label',
+    'text-anchor': labelAnchor,
+    'dominant-baseline': labelBaseline,
   });
   text.textContent = label;
+
+  if (rotation !== null) {
+    text.setAttribute('transform', `rotate(${rotation} ${textX.toFixed(2)} ${textY.toFixed(2)})`);
+  }
 
   group.appendChild(line);
   group.appendChild(text);
