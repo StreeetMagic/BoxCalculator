@@ -10,6 +10,9 @@
   --accent: #4c7dff;
   --accent-hover: #6b94ff;
   --danger: #ff8080;
+  --gost-outer: #34d27c;
+  --gost-inner: #4cb2ff;
+  --gost-dim: #7ddaa3;
   font-size: 16px;
   font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
@@ -143,4 +146,113 @@ button[type="submit"]:active {
 
 #boxTable tbody tr:hover {
   background: var(--surface-alt);
+}
+
+.drawing-card {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.drawing {
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.drawing__frame {
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  position: relative;
+  overflow: hidden;
+}
+
+.drawing__frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.06) 2px, transparent 2px),
+    linear-gradient(30deg, rgba(255, 255, 255, 0.06) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask: linear-gradient(180deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.4));
+  pointer-events: none;
+}
+
+.drawing__canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.drawing figcaption {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+#drawing text {
+  font-family: "PT Sans", "Inter", sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.outer-face {
+  fill: rgba(52, 210, 124, 0.08);
+  stroke: var(--gost-outer);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+
+.outer-wire {
+  fill: none;
+  stroke: var(--gost-outer);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.inner-face {
+  fill: rgba(76, 178, 255, 0.12);
+  stroke: var(--gost-inner);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+
+.inner-wire {
+  fill: none;
+  stroke: var(--gost-inner);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dim-line {
+  fill: none;
+  stroke: var(--gost-dim);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.dim-extension {
+  fill: none;
+  stroke: var(--gost-dim);
+  stroke-width: 1.1;
+  stroke-dasharray: 5 4;
+}
+
+.dim-text {
+  fill: var(--gost-dim);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.drawing-placeholder {
+  fill: var(--text-secondary);
+  font-size: 0.95rem;
+  text-anchor: middle;
 }

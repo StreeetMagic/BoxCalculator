@@ -33,6 +33,25 @@
       <pre id="out">Введите размеры для расчёта.</pre>
     </section>
 
+    <section class="card drawing-card">
+      <h2>Схема размещения</h2>
+      <figure class="drawing">
+        <div class="drawing__frame">
+          <svg id="drawing" class="drawing__canvas" viewBox="0 0 360 280" role="img" aria-labelledby="drawingTitle drawingDesc">
+            <title id="drawingTitle">Изометрический чертёж коробки и изделия</title>
+            <desc id="drawingDesc">Схема показывает выбранную коробку и размещение изделия внутри, размеры подписаны по осям.</desc>
+            <defs>
+              <marker id="dimTick" orient="auto" markerWidth="8" markerHeight="8" refX="0" refY="3.5" markerUnits="userSpaceOnUse">
+                <path d="M 0 0 L 8 3.5 L 0 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+              </marker>
+            </defs>
+            <g id="drawingContent"></g>
+          </svg>
+        </div>
+        <figcaption id="drawingCaption">Введите размеры для расчёта, чтобы увидеть схему размещения изделия в коробке.</figcaption>
+      </figure>
+    </section>
+
     <section class="card">
       <table id="boxTable">
         <caption>Каталог доступных коробок</caption>
