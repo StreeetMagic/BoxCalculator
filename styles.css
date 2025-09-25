@@ -10,6 +10,10 @@
   --accent: #4c7dff;
   --accent-hover: #6b94ff;
   --danger: #ff8080;
+  --box-stroke: #47d07f;
+  --box-stroke-hidden: rgba(71, 208, 127, 0.55);
+  --product-stroke: #4d9dff;
+  --dimension-stroke: #5ce6a4;
   font-size: 16px;
   font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
@@ -143,4 +147,118 @@ button[type="submit"]:active {
 
 #boxTable tbody tr:hover {
   background: var(--surface-alt);
+}
+
+.card h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.35rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.drawing {
+  position: relative;
+  margin: 1.5rem 0 1rem;
+  padding: 1.5rem;
+  border-radius: 18px;
+  background: var(--surface-muted);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.drawing::before {
+  content: "";
+  position: absolute;
+  inset: 0.75rem;
+  border-radius: 14px;
+  background-image: linear-gradient(120deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+                    linear-gradient(60deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+                    linear-gradient(0deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px, 48px 48px, 24px 24px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.drawing svg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 30px 35px rgba(10, 16, 30, 0.55));
+}
+
+.drawing-note {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.box-edge,
+.product-edge,
+.dimension-line,
+.extension-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.box-edge {
+  stroke: var(--box-stroke);
+  stroke-width: 3;
+}
+
+.box-edge.box-edge-hidden {
+  stroke: var(--box-stroke-hidden);
+  stroke-dasharray: 8 8;
+}
+
+.product-edge {
+  stroke: var(--product-stroke);
+  stroke-width: 2.4;
+}
+
+.product-edge.product-edge-hidden {
+  stroke-dasharray: 6 6;
+  opacity: 0.7;
+}
+
+.dimension-line {
+  stroke: var(--dimension-stroke);
+  stroke-width: 1.8;
+  color: var(--dimension-stroke);
+}
+
+.extension-line {
+  stroke: var(--dimension-stroke);
+  stroke-width: 1.2;
+  stroke-dasharray: 6 4;
+  opacity: 0.7;
+}
+
+.dimension-text {
+  fill: var(--text-primary);
+  font-family: "JetBrains Mono", "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.annotation {
+  fill: var(--product-stroke);
+  font-family: "JetBrains Mono", "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
