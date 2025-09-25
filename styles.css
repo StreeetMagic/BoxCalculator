@@ -43,6 +43,12 @@ h1 {
   letter-spacing: -0.02em;
 }
 
+h2 {
+  margin: 0 0 1.25rem;
+  font-size: clamp(1.35rem, 3vw, 1.6rem);
+  letter-spacing: -0.01em;
+}
+
 .lead {
   margin: 0.5rem 0 0;
   color: var(--text-secondary);
@@ -143,4 +149,104 @@ button[type="submit"]:active {
 
 #boxTable tbody tr:hover {
   background: var(--surface-alt);
+}
+
+.illustration-wrapper {
+  display: grid;
+  gap: 1rem;
+}
+
+#boxIllustration {
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(76, 125, 255, 0.12), rgba(12, 17, 27, 0.2));
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+#boxIllustration text {
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 0.75rem;
+  fill: var(--text-secondary);
+}
+
+#illustrationHint {
+  dominant-baseline: middle;
+}
+
+#boxIllustration g[data-role="outer"] path {
+  fill: none;
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 6;
+  opacity: 0.85;
+}
+
+#boxIllustration g[data-role="inner"] path {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-width: 1.6;
+}
+
+#boxIllustration .dimension-line {
+  stroke: rgba(111, 141, 255, 0.9);
+  stroke-width: 1.5;
+  fill: none;
+  marker-start: url(#arrow-accent);
+  marker-end: url(#arrow-accent);
+}
+
+#boxIllustration .dim-text {
+  font-size: 0.7rem;
+  font-weight: 600;
+  fill: #dbe4ff;
+  paint-order: stroke fill;
+  stroke: rgba(12, 17, 27, 0.85);
+  stroke-width: 3px;
+  letter-spacing: -0.01em;
+}
+
+#boxIllustration .dim-text tspan:nth-child(1) {
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  fill: rgba(219, 228, 255, 0.75);
+}
+
+#boxIllustration .dim-text tspan:nth-child(2) {
+  fill: rgba(111, 141, 255, 0.95);
+}
+
+#boxIllustration .dim-text tspan:nth-child(3) {
+  fill: rgba(144, 247, 255, 0.95);
+}
+
+.illustration-legend {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: rgba(17, 23, 39, 0.85);
+  border: 1px solid rgba(111, 141, 255, 0.2);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 28px;
+  height: 0;
+  border-bottom: 2px solid;
+  border-radius: 999px;
+}
+
+.legend-dot--outer {
+  border-bottom-style: dashed;
+  border-color: var(--text-secondary);
+}
+
+.legend-dot--inner {
+  border-color: var(--text-primary);
 }

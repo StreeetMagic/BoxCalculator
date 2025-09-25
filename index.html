@@ -34,6 +34,31 @@
     </section>
 
     <section class="card">
+      <h2>Как изделие помещается в коробку</h2>
+      <div class="illustration-wrapper">
+        <svg id="boxIllustration" viewBox="0 0 320 240" role="img" aria-labelledby="illustrationTitle illustrationDesc">
+          <title id="illustrationTitle">Изометрическая схема размещения изделия в коробке</title>
+          <desc id="illustrationDesc">Пунктиром показан контур коробки, сплошной линией — изделие, рядом с осями подписаны размеры.</desc>
+          <defs>
+            <marker id="arrow-accent" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="8" markerHeight="8" orient="auto">
+              <path d="M0,0 L8,4 L0,8 z" fill="#6f8dff"></path>
+            </marker>
+          </defs>
+          <g data-role="outer"></g>
+          <g data-role="inner"></g>
+          <g data-role="dimensions"></g>
+          <text id="illustrationHint" x="50%" y="50%" text-anchor="middle">Введите размеры, чтобы увидеть схему.</text>
+        </svg>
+        <div class="illustration-legend" aria-hidden="true">
+          <span class="legend-dot legend-dot--outer"></span>
+          <span>Коробка — пунктир</span>
+          <span class="legend-dot legend-dot--inner"></span>
+          <span>Изделие — сплошная линия</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
       <table id="boxTable">
         <caption>Каталог доступных коробок</caption>
         <thead>
