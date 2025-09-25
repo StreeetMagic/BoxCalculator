@@ -33,6 +33,17 @@
       <pre id="out">Введите размеры для расчёта.</pre>
     </section>
 
+    <section class="card visualization">
+      <h2 id="vizTitle">Визуализация размещения</h2>
+      <p class="viz-desc">Пунктирная фигура обозначает подобранную коробку, сплошная — изделие.</p>
+      <p id="vizDesc" class="visually-hidden">Изометрическая схема изделия внутри коробки с подписями габаритов.</p>
+      <div class="viz-frame" id="vizFrame" data-has-content="false">
+        <svg id="isoScene" viewBox="0 0 360 260" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="vizTitle vizDesc"></svg>
+        <div class="viz-placeholder" id="vizPlaceholder">Визуализация появится после ввода размеров.</div>
+      </div>
+      <p class="viz-status" id="vizStatus"></p>
+    </section>
+
     <section class="card">
       <table id="boxTable">
         <caption>Каталог доступных коробок</caption>
