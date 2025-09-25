@@ -33,6 +33,32 @@
       <pre id="out">Введите размеры для расчёта.</pre>
     </section>
 
+    <section class="card illustration-card">
+      <h2>Визуализация размещения</h2>
+      <p class="illustration-hint">Схема обновляется при изменении размеров. Пунктиром показан объём коробки, сплошными линиями — изделие.</p>
+      <div class="illustration-wrapper">
+        <svg id="box-illustration" viewBox="0 0 360 260" role="img" aria-labelledby="illustrationTitle illustrationDesc">
+          <title id="illustrationTitle">Схема размещения изделия внутри коробки</title>
+          <desc id="illustrationDesc">Визуализация появится после ввода размеров изделия.</desc>
+          <g id="illustrationLayer"></g>
+        </svg>
+        <dl id="dimensionLegend" class="dimension-legend">
+          <div>
+            <dt>Изделие</dt>
+            <dd id="legendProduct">—</dd>
+          </div>
+          <div>
+            <dt>Расчёт с запасом</dt>
+            <dd id="legendAllowance">—</dd>
+          </div>
+          <div>
+            <dt>Выбранная коробка</dt>
+            <dd id="legendBox">—</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
     <section class="card">
       <table id="boxTable">
         <caption>Каталог доступных коробок</caption>
