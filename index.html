@@ -1,1 +1,300 @@
-Aboba
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BoxCalculator</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top, #8bc6ec 0%, #9599e2 100%);
+        }
+
+        main {
+            width: min(90vw, 420px);
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 18px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(8px);
+            padding: 32px 28px;
+        }
+
+        h1 {
+            margin: 0 0 24px;
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 2.6rem);
+            color: #2d2a44;
+        }
+
+        .display {
+            background-color: #f1f3ff;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            text-align: right;
+            color: #2d2a44;
+            min-height: 64px;
+            word-break: break-all;
+        }
+
+        .grid {
+            display: grid;
+            gap: 14px;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        button {
+            border: none;
+            border-radius: 14px;
+            padding: 14px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #ffffff;
+            background: linear-gradient(135deg, #7579ff, #b224ef);
+            cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+            filter: brightness(0.95);
+        }
+
+        button.operation {
+            background: linear-gradient(135deg, #ff6a88, #ff99ac);
+        }
+
+        button.equal {
+            grid-column: span 2;
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: #1f2335;
+        }
+
+        button.clear {
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+        }
+
+        button.zero {
+            grid-column: span 2;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 0.9rem;
+            color: rgba(45, 42, 68, 0.75);
+        }
+
+        a {
+            color: inherit;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Box Calculator</h1>
+        <div id="display" class="display">0</div>
+        <div class="grid">
+            <button class="clear" data-action="clear">AC</button>
+            <button data-action="sign">±</button>
+            <button data-action="percent">%</button>
+            <button class="operation" data-action="divide">÷</button>
+
+            <button data-value="7">7</button>
+            <button data-value="8">8</button>
+            <button data-value="9">9</button>
+            <button class="operation" data-action="multiply">×</button>
+
+            <button data-value="4">4</button>
+            <button data-value="5">5</button>
+            <button data-value="6">6</button>
+            <button class="operation" data-action="subtract">−</button>
+
+            <button data-value="1">1</button>
+            <button data-value="2">2</button>
+            <button data-value="3">3</button>
+            <button class="operation" data-action="add">+</button>
+
+            <button class="zero" data-value="0">0</button>
+            <button data-value=".">.</button>
+            <button class="equal" data-action="equals">=</button>
+        </div>
+        <footer>
+            Сделано для BoxCalculator © 2024
+        </footer>
+    </main>
+
+    <script>
+        const display = document.getElementById("display");
+        const buttons = document.querySelectorAll("button");
+
+        let currentValue = "0";
+        let storedValue = null;
+        let currentOperator = null;
+        let overwrite = true;
+
+        function updateDisplay(value) {
+            display.textContent = value;
+        }
+
+        function inputDigit(digit) {
+            if (overwrite) {
+                currentValue = digit === "." ? "0." : digit;
+                overwrite = false;
+            } else if (digit === "." && currentValue.includes(".")) {
+                return;
+            } else {
+                currentValue += digit;
+            }
+            updateDisplay(currentValue);
+        }
+
+        function clearAll() {
+            currentValue = "0";
+            storedValue = null;
+            currentOperator = null;
+            overwrite = true;
+            updateDisplay(currentValue);
+        }
+
+        function toggleSign() {
+            if (currentValue === "0") return;
+            currentValue = currentValue.startsWith("-")
+                ? currentValue.slice(1)
+                : `-${currentValue}`;
+            updateDisplay(currentValue);
+        }
+
+        function toPercent() {
+            const value = parseFloat(currentValue);
+            currentValue = String(value / 100);
+            updateDisplay(currentValue);
+        }
+
+        function setOperator(operator) {
+            if (!overwrite) {
+                calculate();
+            }
+            storedValue = parseFloat(currentValue);
+            currentOperator = operator;
+            overwrite = true;
+        }
+
+        function calculate() {
+            if (storedValue === null || currentOperator === null || overwrite) {
+                return;
+            }
+
+            const secondValue = parseFloat(currentValue);
+            let result = storedValue;
+
+            switch (currentOperator) {
+                case "add":
+                    result += secondValue;
+                    break;
+                case "subtract":
+                    result -= secondValue;
+                    break;
+                case "multiply":
+                    result *= secondValue;
+                    break;
+                case "divide":
+                    result = secondValue === 0 ? "Ошибка" : result / secondValue;
+                    break;
+            }
+
+            currentValue = String(result);
+            storedValue = result === "Ошибка" ? null : result;
+            currentOperator = result === "Ошибка" ? null : currentOperator;
+            overwrite = true;
+            updateDisplay(currentValue);
+        }
+
+        buttons.forEach((button) => {
+            const { value, action } = button.dataset;
+
+            if (value) {
+                button.addEventListener("click", () => inputDigit(value));
+                return;
+            }
+
+            switch (action) {
+                case "clear":
+                    button.addEventListener("click", clearAll);
+                    break;
+                case "sign":
+                    button.addEventListener("click", toggleSign);
+                    break;
+                case "percent":
+                    button.addEventListener("click", toPercent);
+                    break;
+                case "add":
+                case "subtract":
+                case "multiply":
+                case "divide":
+                    button.addEventListener("click", () => setOperator(action));
+                    break;
+                case "equals":
+                    button.addEventListener("click", calculate);
+                    break;
+            }
+        });
+
+        document.addEventListener("keydown", (event) => {
+            const { key } = event;
+
+            if (/^[0-9]$/.test(key)) {
+                inputDigit(key);
+                return;
+            }
+
+            if (key === ".") {
+                inputDigit(key);
+                return;
+            }
+
+            if (key === "Enter" || key === "=") {
+                event.preventDefault();
+                calculate();
+                return;
+            }
+
+            if (key === "Escape") {
+                clearAll();
+                return;
+            }
+
+            if (key === "Backspace") {
+                if (overwrite) return;
+                currentValue = currentValue.length > 1 ? currentValue.slice(0, -1) : "0";
+                overwrite = currentValue === "0";
+                updateDisplay(currentValue);
+                return;
+            }
+
+            const operators = {
+                "+": "add",
+                "-": "subtract",
+                "*": "multiply",
+                "/": "divide",
+            };
+
+            if (operators[key]) {
+                event.preventDefault();
+                setOperator(operators[key]);
+            }
+        });
+    </script>
+</body>
+</html>
