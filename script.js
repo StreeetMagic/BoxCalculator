@@ -27,15 +27,30 @@ const BOXES = [
 
 const form = document.getElementById('f');
 const output = document.getElementById('out');
+const inputs = Array.from(form.querySelectorAll('input'));
+const INITIAL_MESSAGE = 'Введите размеры — расчёт выполнится автоматически.';
+
+showOut(INITIAL_MESSAGE);
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
+  calculate();
+});
 
-  const sourceLength = parseInt(document.getElementById('l').value, 10);
-  const sourceWidth = parseInt(document.getElementById('w').value, 10);
-  const sourceHeight = parseInt(document.getElementById('h').value, 10);
+inputs.forEach((input) => {
+  input.addEventListener('input', calculate);
+});
 
-  if (!isPositiveInteger(sourceLength) || !isPositiveInteger(sourceWidth) || !isPositiveInteger(sourceHeight)) {
+function calculate() {
+  const rawValues = inputs.map((input) => input.value.trim());
+  if (rawValues.some((value) => value === '')) {
+    showOut(INITIAL_MESSAGE);
+    return;
+  }
+
+  const [sourceLength, sourceWidth, sourceHeight] = rawValues.map((value) => parseInt(value, 10));
+
+  if (![sourceLength, sourceWidth, sourceHeight].every(isPositiveInteger)) {
     showOut('Введите положительные целые значения.');
     return;
   }
@@ -68,10 +83,10 @@ form.addEventListener('submit', (event) => {
   const outLength = Math.max(best.L, best.W);
   const outWidth = Math.min(best.L, best.W);
   showOut(`Подходящая коробка: ${outLength} x ${outWidth} x ${neededHeight} мм (Д x Ш x В).`);
-});
+}
 
 function isPositiveInteger(value) {
-  return Number.isFinite(value) && value > 0;
+  return Number.isInteger(value) && value > 0;
 }
 
 function showOut(text) {
