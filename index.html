@@ -33,6 +33,33 @@
       <pre id="out">Введите размеры для расчёта.</pre>
     </section>
 
+    <section class="card viz-card">
+      <div class="viz-header">
+        <h2>Эскиз размещения</h2>
+        <p class="viz-note">Коробка выделена зелёным цветом, изделие — синим. Линии размеров оформлены по ГОСТ.</p>
+      </div>
+      <div class="viz-canvas">
+        <svg id="isoDrawing" viewBox="0 0 400 320" role="img" aria-labelledby="isoTitle isoDesc" preserveAspectRatio="xMidYMid meet">
+          <title id="isoTitle">Изометрическая схема размещения изделия в коробке</title>
+          <desc id="isoDesc">Чертёж показывает подобранную коробку и изделие внутри неё с основными размерами по длине, ширине и высоте.</desc>
+          <defs>
+            <pattern id="isoGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M0 20 L20 0 M-10 10 L10 -10 M10 30 L30 10" stroke="var(--grid-line)" stroke-width="0.6" fill="none" />
+            </pattern>
+            <marker id="dimArrowStart" orient="auto" markerWidth="8" markerHeight="8" refX="0" refY="3.5">
+              <path d="M7 0 L0 3.5 L7 7" fill="none" stroke="currentColor" stroke-width="1.2" />
+            </marker>
+            <marker id="dimArrowEnd" orient="auto" markerWidth="8" markerHeight="8" refX="7" refY="3.5">
+              <path d="M0 0 L7 3.5 L0 7" fill="none" stroke="currentColor" stroke-width="1.2" />
+            </marker>
+          </defs>
+          <rect class="grid-fill" x="0" y="0" width="400" height="320" fill="url(#isoGrid)" />
+          <g id="isoContent" stroke-linecap="round" stroke-linejoin="round"></g>
+          <text id="isoPlaceholder" x="200" y="160">Введите размеры для визуализации.</text>
+        </svg>
+      </div>
+    </section>
+
     <section class="card">
       <table id="boxTable">
         <caption>Каталог доступных коробок</caption>
