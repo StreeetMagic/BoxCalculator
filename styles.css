@@ -144,3 +144,134 @@ button[type="submit"]:active {
 #boxTable tbody tr:hover {
   background: var(--surface-alt);
 }
+
+.illustration-card {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.illustration-card h2 {
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+}
+
+.illustration-hint {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.illustration-wrapper {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 840px) {
+  .illustration-wrapper {
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 260px);
+    align-items: start;
+  }
+}
+
+#box-illustration {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(76, 125, 255, 0.1), rgba(12, 17, 27, 0.05));
+  border: 1px solid rgba(76, 125, 255, 0.25);
+  box-shadow: inset 0 0 0 1px rgba(12, 17, 27, 0.35);
+}
+
+#box-illustration text.placeholder {
+  font-size: 1rem;
+  fill: var(--text-secondary);
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.outer-box polygon,
+.inner-box polygon {
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.outer-box polygon {
+  stroke: rgba(76, 125, 255, 0.9);
+  stroke-dasharray: 8 6;
+  fill: rgba(76, 125, 255, 0.12);
+}
+
+.outer-box .face-side {
+  fill: rgba(76, 125, 255, 0.08);
+}
+
+.outer-box .face-top {
+  fill: rgba(76, 125, 255, 0.16);
+}
+
+.inner-box polygon {
+  stroke: var(--text-primary);
+  fill: rgba(244, 247, 255, 0.18);
+}
+
+.inner-box .face-side {
+  fill: rgba(244, 247, 255, 0.14);
+}
+
+.inner-box .face-top {
+  fill: rgba(244, 247, 255, 0.24);
+}
+
+.dimension-line {
+  stroke: var(--text-secondary);
+  stroke-width: 1.6;
+  fill: none;
+}
+
+.dimension-extension {
+  stroke: var(--text-secondary);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+
+.dimension-label {
+  fill: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  paint-order: stroke fill;
+  stroke: rgba(12, 17, 27, 0.75);
+  stroke-width: 4px;
+}
+
+.dimension-legend {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.dimension-legend div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.dimension-legend dt {
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.dimension-legend dd {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.dimension-legend dd.muted {
+  color: var(--text-secondary);
+}
