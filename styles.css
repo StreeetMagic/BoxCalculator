@@ -144,3 +144,107 @@ button[type="submit"]:active {
 #boxTable tbody tr:hover {
   background: var(--surface-alt);
 }
+
+.illustration-card {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.illustration-card h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 3vw, 1.6rem);
+}
+
+.illustration-desc {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.iso-container {
+  position: relative;
+  border-radius: 16px;
+  background: radial-gradient(circle at top left, rgba(76, 125, 255, 0.12), transparent 60%),
+              radial-gradient(circle at bottom right, rgba(166, 104, 255, 0.1), transparent 55%),
+              var(--surface-muted);
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+#isoScene {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+}
+
+.iso-container.is-empty #isoScene {
+  opacity: 0.45;
+}
+
+.iso-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.iso-container:not(.is-empty) .iso-hint {
+  opacity: 0;
+}
+
+.product-surface {
+  fill: url(#productShade);
+}
+
+.product-edges {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.box-edges {
+  fill: none;
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+  stroke-linecap: round;
+}
+
+.dim-line {
+  fill: none;
+  stroke: rgba(154, 167, 194, 0.85);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+  color: rgba(154, 167, 194, 0.85);
+}
+
+.dim-label {
+  fill: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dim-label tspan {
+  font-size: 0.72rem;
+  letter-spacing: normal;
+}
+
+@media (max-width: 600px) {
+  .illustration-card {
+    gap: 1rem;
+  }
+
+  .dim-label {
+    font-size: 0.7rem;
+  }
+}

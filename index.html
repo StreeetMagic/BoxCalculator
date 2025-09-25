@@ -33,6 +33,42 @@
       <pre id="out">Введите размеры для расчёта.</pre>
     </section>
 
+    <section class="card illustration-card">
+      <h2>Визуализация размещения</h2>
+      <p class="illustration-desc">Изометрический чертёж показывает, как изделие (сплошные линии) располагается внутри коробки (пунктир).</p>
+      <div class="iso-container is-empty">
+        <svg id="isoScene" viewBox="0 0 320 240" role="presentation" aria-hidden="true">
+          <defs>
+            <marker id="arrow" orient="auto" markerWidth="6" markerHeight="6" refX="4" refY="3">
+              <path d="M0,0 L6,3 L0,6" fill="currentColor"></path>
+            </marker>
+            <linearGradient id="productShade" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#4c7dff" stop-opacity="0.32"></stop>
+              <stop offset="100%" stop-color="#4c7dff" stop-opacity="0.08"></stop>
+            </linearGradient>
+          </defs>
+          <g id="boxGroup">
+            <path id="boxEdges" class="box-edges" d=""></path>
+          </g>
+          <g id="productGroup">
+            <polygon id="productTop" class="product-surface" points=""></polygon>
+            <polygon id="productSide" class="product-surface" points=""></polygon>
+            <polygon id="productFront" class="product-surface" points=""></polygon>
+            <path id="productEdges" class="product-edges" d=""></path>
+          </g>
+          <g id="dimensions">
+            <line id="lengthDim" class="dim-line" x1="0" y1="0" x2="0" y2="0" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+            <line id="widthDim" class="dim-line" x1="0" y1="0" x2="0" y2="0" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+            <line id="heightDim" class="dim-line" x1="0" y1="0" x2="0" y2="0" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+            <text id="lengthLabel" class="dim-label" x="0" y="0"></text>
+            <text id="widthLabel" class="dim-label" x="0" y="0"></text>
+            <text id="heightLabel" class="dim-label" x="0" y="0"></text>
+          </g>
+        </svg>
+        <p id="isoHint" class="iso-hint">Введите размеры, чтобы увидеть схему размещения.</p>
+      </div>
+    </section>
+
     <section class="card">
       <table id="boxTable">
         <caption>Каталог доступных коробок</caption>
