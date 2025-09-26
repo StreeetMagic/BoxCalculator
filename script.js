@@ -3,14 +3,14 @@ const ADD_HEIGHT = 225;
 const MAX_HEIGHT = 2450;
 
 const BOXES = [
-  { L: 1250, W: 850 },
-  { L: 1800, W: 850 },
-  { L: 1800, W: 1225 },
-  { L: 1800, W: 1600 },
-  { L: 2350, W: 850 },
-  { L: 2350, W: 1225 },
-  { L: 2350, W: 1650 },
-  { L: 2350, W: 1950 },
+  { name: 'ТДП.004.1.01.022', L: 1250, W: 850 },
+  { name: 'ТДП.004.1.01.032', L: 1800, W: 850 },
+  { name: 'ТДП.004.1.01.033', L: 1800, W: 1225 },
+  { name: 'ТДП.004.1.01.034', L: 1800, W: 1600 },
+  { name: 'ТДП.004.1.01.042', L: 2350, W: 850 },
+  { name: 'ТДП.004.1.01.043', L: 2350, W: 1225 },
+  { name: 'ТДП.004.1.01.044', L: 2350, W: 1650 },
+  { name: 'ТДП.004.1.01.045', L: 2350, W: 1950 },
 ];
 
 (function renderBoxTable() {
@@ -20,7 +20,7 @@ const BOXES = [
     const tr = document.createElement('tr');
     const length = Math.max(box.L, box.W);
     const width = Math.min(box.L, box.W);
-    tr.innerHTML = `<td>${index + 1}</td><td>${length}</td><td>${width}</td>`;
+    tr.innerHTML = `<td>${index + 1}</td><td>${box.name}</td><td>${length}</td><td>${width}</td>`;
     tbody.appendChild(tr);
   });
 })();
@@ -81,7 +81,7 @@ function calculate() {
 
   const outLength = Math.max(best.L, best.W);
   const outWidth = Math.min(best.L, best.W);
-  showOut(`Подходящая коробка: ${outLength} x ${outWidth} x ${neededHeight} мм (Д x Ш x В).`);
+  showOut(`Подходящая коробка: ${best.name} — ${outLength} x ${outWidth} x ${neededHeight} мм (Д x Ш x В).`);
 }
 
 function isPositiveInteger(value) {
