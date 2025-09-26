@@ -4,7 +4,155 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Подбор коробки</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0c111b;
+      --surface: #141b2d;
+      --surface-alt: #1a2336;
+      --surface-muted: #111727;
+      --border: #273149;
+      --text-primary: #f4f7ff;
+      --text-secondary: #9aa7c2;
+      --accent: #4c7dff;
+      --accent-hover: #6b94ff;
+      --danger: #ff8080;
+      font-size: 16px;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: clamp(1.5rem, 4vw, 3.5rem);
+      background: radial-gradient(circle at top, rgba(76, 125, 255, 0.22), transparent 60%),
+                  radial-gradient(circle at bottom, rgba(166, 104, 255, 0.18), transparent 55%),
+                  var(--bg);
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    main {
+      width: min(960px, 100%);
+      display: grid;
+      gap: clamp(1.5rem, 3vw, 2.5rem);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      letter-spacing: -0.02em;
+    }
+
+    .lead {
+      margin: 0.5rem 0 0;
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: clamp(1.25rem, 3vw, 2rem);
+      box-shadow: 0 30px 60px rgba(7, 12, 24, 0.45);
+    }
+
+    form {
+      display: grid;
+      gap: clamp(1rem, 2.5vw, 1.75rem);
+    }
+
+    .field-grid {
+      display: grid;
+      gap: clamp(0.75rem, 2vw, 1.25rem);
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-weight: 600;
+    }
+
+    input[type="number"] {
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(76, 125, 255, 0.25);
+    }
+
+    #out {
+      margin: 0;
+      white-space: pre-line;
+      font-family: "JetBrains Mono", "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+      font-size: 1rem;
+    }
+
+    #boxTable {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    #boxTable caption {
+      margin-bottom: 1rem;
+      font-weight: 600;
+      text-align: left;
+      color: var(--text-secondary);
+    }
+
+    #boxTable th,
+    #boxTable td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    #boxTable tbody tr:hover {
+      background: var(--surface-alt);
+    }
+
+    details {
+      background: var(--surface-muted);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+    }
+
+    summary {
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--accent);
+    }
+
+    summary:hover {
+      color: var(--accent-hover);
+    }
+
+    .spec pre {
+      white-space: pre-wrap;
+      margin: 1rem 0 0;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+  </style>
 </head>
 <body>
   <main>
@@ -44,6 +192,174 @@
     </section>
   </main>
 
-  <script src="script.js"></script>
+  <section class="card spec">
+    <details>
+      <summary>Техническое задание</summary>
+      <pre>Техническое задание на веб-приложение «Подбор коробки»
+====================================================
+
+1. Общие сведения
+-----------------
+1.1. Назначение: веб-страница, помогающая подобрать подходящую коробку из заранее заданного каталога по введённым пользователем габаритам изделия.
+1.2. Платформа: статическая HTML-страница, работающая в современных браузерах без серверной части.
+1.3. Язык интерфейса: русский.
+
+2. Функциональные требования
+----------------------------
+2.1. Форма ввода должна содержать три числовых поля:
+    • «Длина, мм» – обязательное поле, принимает положительные целые значения (минимум 1).
+    • «Ширина, мм» – обязательное поле, принимает положительные целые значения (минимум 1).
+    • «Высота, мм» – обязательное поле, принимает положительные целые значения (минимум 1).
+    Поля должны использовать HTML-атрибут `type="number"`, параметр `min="1"` и быть обязательными (`required`).
+2.2. Расчёт должен выполняться автоматически при изменении значений в любом из полей без нажатия дополнительных кнопок и без перезагрузки страницы.
+2.3. При расчёте выполняется проверка:
+    • введены ли значения в каждое поле;
+    • являются ли значения целыми положительными числами.
+    В случае некорректного ввода необходимо вывести сообщение «Введите положительные целые значения.».
+2.4. Алгоритм расчёта:
+    • К исходной длине и ширине добавляется по 100 мм.
+    • К исходной высоте добавляется 225 мм, далее результат округляется вверх до ближайшего шага в 10 мм.
+    • Максимально допустимая высота коробки – 2450 мм. При превышении выводится сообщение об ошибке: «Высота {значение} мм превышает максимум 2450 мм.\nИзмените входные размеры.».
+    • Из набора доступных коробок нужно выбрать варианты, в которые помещаются рассчитанные длина и ширина. Допустима ориентация «как есть» или с перестановкой сторон.
+    • Среди подходящих коробок выбирается коробка с минимальной площадью основания; при равной площади выбирается коробка с меньшей суммой длины и ширины.
+    • Если подходящая коробка не найдена, вывести сообщение: «Подходящая коробка не найдена.\nМинимум по расчёту: {длина} x {ширина} x {высота} мм (Д x Ш x В).».
+    • Если коробка найдена, вывести сообщение: «Подходящая коробка: {название} — {длина} x {ширина} x {высота} мм (Д x Ш x В).».
+2.5. Сообщения пользователю выводятся в заранее определённый блок `<pre id="out">`.
+
+3. Набор коробок
+----------------
+3.1. Каталог коробок хранится в массиве объектов `BOXES`, где для каждой коробки указаны поля `name` (наименование), `L` (длина) и `W` (ширина) в миллиметрах.
+3.2. Текущий набор коробок:
+    1) ТДП.004.1.01.022 — 1250 x 850
+    2) ТДП.004.1.01.032 — 1800 x 850
+    3) ТДП.004.1.01.033 — 1800 x 1225
+    4) ТДП.004.1.01.034 — 1800 x 1600
+    5) ТДП.004.1.01.042 — 2350 x 850
+    6) ТДП.004.1.01.043 — 2350 x 1225
+    7) ТДП.004.1.01.044 — 2350 x 1650
+    8) ТДП.004.1.01.045 — 2350 x 1950
+3.3. Таблица доступных коробок должна автоматически строиться на основе массива `BOXES`, выводить колонку с наименованием коробки и показывать значения длины и ширины в отсортированном порядке (большее значение в колонке «Длина, мм»).
+
+4. Пользовательский интерфейс
+-----------------------------
+4.1. Заголовок страницы – «Подбор коробки».
+4.2. Под формой размещается таблица с перечнем доступных коробок. Таблица содержит заголовки колонок: «#», «Название», «Длина, мм», «Ширина, мм».
+4.3. Таблица должна быть заполнена при загрузке страницы, данные должны формироваться скриптом.
+4.4. Результирующие сообщения и ошибки отображаются в текстовом блоке `<pre id="out">`, который по умолчанию содержит подсказку «Введите размеры для расчёта.».
+      </pre>
+    </details>
+  </section>
+
+  <script>
+    const ADD_EACH_SIDE = 100;
+    const ADD_HEIGHT = 225;
+    const MAX_HEIGHT = 2450;
+
+    const BOXES = [
+      { name: 'ТДП.004.1.01.022', L: 1250, W: 850 },
+      { name: 'ТДП.004.1.01.032', L: 1800, W: 850 },
+      { name: 'ТДП.004.1.01.033', L: 1800, W: 1225 },
+      { name: 'ТДП.004.1.01.034', L: 1800, W: 1600 },
+      { name: 'ТДП.004.1.01.042', L: 2350, W: 850 },
+      { name: 'ТДП.004.1.01.043', L: 2350, W: 1225 },
+      { name: 'ТДП.004.1.01.044', L: 2350, W: 1650 },
+      { name: 'ТДП.004.1.01.045', L: 2350, W: 1950 },
+    ];
+
+    (function renderBoxTable() {
+      const tbody = document.querySelector('#boxTable tbody');
+      tbody.innerHTML = '';
+      BOXES.forEach((box, index) => {
+        const tr = document.createElement('tr');
+        const length = Math.max(box.L, box.W);
+        const width = Math.min(box.L, box.W);
+        tr.innerHTML = `<td>${index + 1}</td><td>${box.name}</td><td>${length}</td><td>${width}</td>`;
+        tbody.appendChild(tr);
+      });
+    })();
+
+    const form = document.getElementById('f');
+    const output = document.getElementById('out');
+    const inputs = Array.from(form.querySelectorAll('input'));
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+    });
+
+    inputs.forEach((input) => {
+      input.addEventListener('input', calculate);
+    });
+
+    calculate();
+
+    function calculate() {
+      const values = inputs.map((input) => input.value.trim());
+
+      if (values.some((value) => value === '')) {
+        showOut('Введите размеры для расчёта.');
+        return;
+      }
+
+      const [sourceLength, sourceWidth, sourceHeight] = values.map((value) => parseInt(value, 10));
+
+      if (!isPositiveInteger(sourceLength) || !isPositiveInteger(sourceWidth) || !isPositiveInteger(sourceHeight)) {
+        showOut('Введите положительные целые значения.', 'error');
+        return;
+      }
+
+      const neededLength = sourceLength + ADD_EACH_SIDE;
+      const neededWidth = sourceWidth + ADD_EACH_SIDE;
+      const neededHeight = roundUpTo(sourceHeight + ADD_HEIGHT, 10);
+
+      if (neededHeight > MAX_HEIGHT) {
+        showOut(`Высота ${neededHeight} мм превышает максимум ${MAX_HEIGHT} мм.\nИзмените входные размеры.`, 'error');
+        return;
+      }
+
+      let best = null;
+      for (const box of BOXES) {
+        if (fits(box, neededLength, neededWidth)) {
+          if (!best || area(box) < area(best) || (area(box) === area(best) && (box.L + box.W) < (best.L + best.W))) {
+            best = box;
+          }
+        }
+      }
+
+      if (!best) {
+        const outLengthMin = Math.max(neededLength, neededWidth);
+        const outWidthMin = Math.min(neededLength, neededWidth);
+        showOut(`Подходящая коробка не найдена.\nМинимум по расчёту: ${outLengthMin} x ${outWidthMin} x ${neededHeight} мм (Д x Ш x В).`, 'error');
+        return;
+      }
+
+      const outLength = Math.max(best.L, best.W);
+      const outWidth = Math.min(best.L, best.W);
+      showOut(`Подходящая коробка: ${best.name} — ${outLength} x ${outWidth} x ${neededHeight} мм (Д x Ш x В).`);
+    }
+
+    function isPositiveInteger(value) {
+      return Number.isFinite(value) && value > 0;
+    }
+
+    function showOut(text, variant = 'default') {
+      output.textContent = text;
+      output.style.color = variant === 'error' ? 'var(--danger)' : 'var(--text-primary)';
+    }
+
+    function area(box) {
+      return box.L * box.W;
+    }
+
+    function fits(box, length, width) {
+      return (box.L >= length && box.W >= width) || (box.L >= width && box.W >= length);
+    }
+
+    function roundUpTo(value, step) {
+      if (step <= 0) step = 10;
+      if (value <= 0) return step;
+      const remainder = value % step;
+      return remainder === 0 ? value : value + (step - remainder);
+    }
+  </script>
 </body>
 </html>
