@@ -4,7 +4,183 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Подбор упаковки</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+:root {
+  color-scheme: dark;
+  --bg: #0c111b;
+  --surface: #141b2d;
+  --surface-alt: #1a2336;
+  --surface-muted: #111727;
+  --border: #273149;
+  --text-primary: #f4f7ff;
+  --text-secondary: #9aa7c2;
+  --accent: #4c7dff;
+  --accent-hover: #6b94ff;
+  --danger: #ff8080;
+  font-size: 16px;
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  background: radial-gradient(circle at top, rgba(76, 125, 255, 0.22), transparent 60%),
+              radial-gradient(circle at bottom, rgba(166, 104, 255, 0.18), transparent 55%),
+              var(--bg);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+main {
+  width: min(960px, 100%);
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  margin: 0.5rem 0 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  box-shadow: 0 30px 60px rgba(7, 12, 24, 0.45);
+}
+
+form {
+  display: grid;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+.field-grid {
+  display: grid;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+input[type="number"] {
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type="number"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(76, 125, 255, 0.25);
+}
+
+#out {
+  margin: 0;
+  white-space: pre-line;
+  font-family: "JetBrains Mono", "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+  font-size: 1rem;
+}
+
+.output-card {
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+.output-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (min-width: 540px) {
+  .output-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+
+  #out {
+    flex: 1;
+  }
+}
+
+button {
+  background: linear-gradient(135deg, var(--accent), #854cff);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.7rem 1.8rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease, opacity 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+  box-shadow: 0 15px 35px rgba(76, 125, 255, 0.35);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+#boxTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+#boxTable caption {
+  margin-bottom: 1rem;
+  font-weight: 600;
+  text-align: left;
+  color: var(--text-secondary);
+}
+
+#boxTable th,
+#boxTable td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+#boxTable tbody tr:hover {
+  background: var(--surface-alt);
+}
+
+  </style>
 </head>
 <body>
   <main>
@@ -48,8 +224,299 @@
         <tbody></tbody>
       </table>
     </section>
+
   </main>
 
-  <script src="script.js"></script>
+  <script>
+const ADD_EACH_SIDE = 100;
+const ADD_HEIGHT = 225;
+const MAX_HEIGHT = 2450;
+
+const BOXES = [
+  { name: 'ТДП.004.1.01.022', L: 1250, W: 850 },
+  { name: 'ТДП.004.1.01.032', L: 1800, W: 850 },
+  { name: 'ТДП.004.1.01.033', L: 1800, W: 1225 },
+  { name: 'ТДП.004.1.01.034', L: 1800, W: 1600 },
+  { name: 'ТДП.004.1.01.042', L: 2350, W: 850 },
+  { name: 'ТДП.004.1.01.043', L: 2350, W: 1225 },
+  { name: 'ТДП.004.1.01.044', L: 2350, W: 1650 },
+  { name: 'ТДП.004.1.01.045', L: 2350, W: 1950 },
+];
+
+(function renderBoxTable() {
+  const tbody = document.querySelector('#boxTable tbody');
+  tbody.innerHTML = '';
+  BOXES.forEach((box, index) => {
+    const tr = document.createElement('tr');
+    const length = Math.max(box.L, box.W);
+    const width = Math.min(box.L, box.W);
+    tr.innerHTML = `<td>${index + 1}</td><td>${box.name}</td><td>${length}</td><td>${width}</td>`;
+    tbody.appendChild(tr);
+  });
+})();
+
+const form = document.getElementById('f');
+const output = document.getElementById('out');
+const copyButton = document.getElementById('copyBtn');
+const inputs = Array.from(form.querySelectorAll('input'));
+let copyResetTimeout = null;
+
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+});
+
+inputs.forEach((input) => {
+  input.addEventListener('input', calculate);
+});
+
+copyButton.addEventListener('click', copyOutput);
+
+calculate();
+
+function calculate() {
+  const values = inputs.map((input) => input.value.trim());
+
+  if (values.some((value) => value === '')) {
+    showOut('Введите данные для расчёта.');
+    return;
+  }
+
+  const [lengthValue, widthValue, heightValue, massValue] = values;
+  const sourceLength = parseInt(lengthValue, 10);
+  const sourceWidth = parseInt(widthValue, 10);
+  const sourceHeight = parseInt(heightValue, 10);
+
+  if (!isPositiveInteger(sourceLength) || !isPositiveInteger(sourceWidth) || !isPositiveInteger(sourceHeight)) {
+    showOut('Введите положительные целые значения для размеров.', 'error');
+    return;
+  }
+
+  const sourceMass = parseNumber(massValue);
+
+  if (!isPositiveNumber(sourceMass)) {
+    showOut('Введите положительное значение массы.', 'error');
+    return;
+  }
+
+  const neededLength = sourceLength + ADD_EACH_SIDE;
+  const neededWidth = sourceWidth + ADD_EACH_SIDE;
+  const neededHeight = roundUpTo(sourceHeight + ADD_HEIGHT, 10);
+
+  if (neededHeight > MAX_HEIGHT) {
+    showOut(`Высота ${neededHeight} мм превышает максимум ${MAX_HEIGHT} мм.\nИзмените входные данные.`, 'error');
+    return;
+  }
+
+  let best = null;
+  for (const box of BOXES) {
+    if (fits(box, neededLength, neededWidth)) {
+      if (!best || area(box) < area(best) || (area(box) === area(best) && (box.L + box.W) < (best.L + best.W))) {
+        best = box;
+      }
+    }
+  }
+
+  if (!best) {
+    const outLengthMin = Math.max(neededLength, neededWidth);
+    const outWidthMin = Math.min(neededLength, neededWidth);
+    showOut(`Подходящая упаковка не найдена.\nМинимум по расчёту: ${outLengthMin} x ${outWidthMin} x ${neededHeight} мм (Д x Ш x В).`, 'error');
+    return;
+  }
+
+  const outLength = Math.max(best.L, best.W);
+  const outWidth = Math.min(best.L, best.W);
+  const formattedMass = formatMass(sourceMass);
+  showOut(`Разместить на паллете ${best.name} H=${neededHeight} мм Масса части ${formattedMass} кг`, 'default', true);
+}
+
+function isPositiveInteger(value) {
+  return Number.isFinite(value) && value > 0;
+}
+
+function isPositiveNumber(value) {
+  return Number.isFinite(value) && value > 0;
+}
+
+function parseNumber(value) {
+  if (typeof value !== 'string') return Number.NaN;
+  const normalized = value.replace(',', '.');
+  return Number.parseFloat(normalized);
+}
+
+function showOut(text, variant = 'default', allowCopy = false) {
+  output.textContent = text;
+  output.style.color = variant === 'error' ? 'var(--danger)' : 'var(--text-primary)';
+  setCopyEnabled(allowCopy && variant !== 'error');
+}
+
+function area(box) {
+  return box.L * box.W;
+}
+
+function fits(box, length, width) {
+  return (box.L >= length && box.W >= width) || (box.L >= width && box.W >= length);
+}
+
+function roundUpTo(value, step) {
+  if (step <= 0) step = 10;
+  if (value <= 0) return step;
+  const remainder = value % step;
+  return remainder === 0 ? value : value + (step - remainder);
+}
+
+function formatMass(value) {
+  return value.toLocaleString('ru-RU', {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
+}
+
+function setCopyEnabled(enabled) {
+  if (!enabled) {
+    copyButton.disabled = true;
+    resetCopyButtonLabel();
+    return;
+  }
+
+  copyButton.disabled = false;
+}
+
+function resetCopyButtonLabel() {
+  copyButton.textContent = 'Скопировать';
+  if (copyResetTimeout) {
+    clearTimeout(copyResetTimeout);
+    copyResetTimeout = null;
+  }
+}
+
+async function copyOutput() {
+  if (copyButton.disabled) return;
+  const text = output.textContent.trim();
+  if (!text) return;
+
+  try {
+    const copied = await writeToClipboard(text);
+    copyButton.textContent = copied ? 'Скопировано' : 'Не удалось скопировать';
+  } catch (error) {
+    console.error('Clipboard error', error);
+    copyButton.textContent = 'Ошибка копирования';
+  }
+
+  copyResetTimeout = setTimeout(resetCopyButtonLabel, 2000);
+}
+
+async function writeToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
+
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'absolute';
+  textarea.style.left = '-9999px';
+  document.body.appendChild(textarea);
+  const selection = document.getSelection();
+  const selectedRange = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+  textarea.select();
+  let copied = false;
+
+  try {
+    copied = document.execCommand('copy');
+  } finally {
+    document.body.removeChild(textarea);
+    if (selectedRange && selection) {
+      selection.removeAllRanges();
+      selection.addRange(selectedRange);
+    }
+  }
+
+  return copied;
+}
+  </script>
+
+  <!-- Техническое задание сохраняется в файле для справки, но не отображается на странице. -->
+  <template id="technical-spec" hidden>
+    <section>
+      <h2>Техническое задание</h2>
+      <p>Описание требований к веб-приложению «Подбор упаковки».</p>
+    </section>
+
+    <section>
+      <h3>1. Общие сведения</h3>
+      <h4>1.1 Назначение</h4>
+      <p>Веб-страница помогает подобрать подходящую упаковку из заранее заданного каталога по введённым пользователем габаритам изделия и массе.</p>
+      <h4>1.2 Платформа</h4>
+      <p>Статическая HTML-страница, работающая в современных браузерах без серверной части.</p>
+      <h4>1.3 Язык интерфейса</h4>
+      <p>Русский.</p>
+    </section>
+
+    <section>
+      <h3>2. Функциональные требования</h3>
+      <h4>2.1 Форма ввода</h4>
+      <ul>
+        <li>«Длина, мм» – обязательное поле, принимает положительные целые значения (минимум 1).</li>
+        <li>«Ширина, мм» – обязательное поле, принимает положительные целые значения (минимум 1).</li>
+        <li>«Высота, мм» – обязательное поле, принимает положительные целые значения (минимум 1).</li>
+        <li>«Масса, кг» – обязательное поле, принимает положительные числа с возможностью ввода десятичных значений.</li>
+        <li>Все поля используют <code>type="number"</code>, обязательны (<code>required</code>) и содержат ограничения <code>min</code> и <code>step</code>.</li>
+      </ul>
+      <h4>2.2 Расчёт</h4>
+      <p>Расчёт выполняется автоматически при изменении значений в любом из полей без нажатия дополнительных кнопок и без перезагрузки страницы.</p>
+      <h4>2.3 Проверки ввода</h4>
+      <ul>
+        <li>Проверяется наличие значений в каждом поле.</li>
+        <li>Длина, ширина и высота должны быть целыми положительными числами.</li>
+        <li>Масса должна быть положительным числом.</li>
+        <li>При некорректном вводе выводится сообщение об ошибке.</li>
+      </ul>
+      <h4>2.4 Алгоритм расчёта</h4>
+      <ul>
+        <li>К исходной длине и ширине добавляется по 100 мм.</li>
+        <li>К исходной высоте добавляется 225 мм, результат округляется вверх до ближайшего шага в 10 мм.</li>
+        <li>Максимально допустимая высота упаковки – 2450 мм. При превышении выводится сообщение об ошибке «Высота {значение} мм превышает максимум 2450 мм. Измените входные данные.».</li>
+        <li>Из доступных упаковок выбираются варианты, в которые помещаются рассчитанные длина и ширина (с учётом возможной перестановки сторон).</li>
+        <li>Среди подходящих упаковок выбирается вариант с минимальной площадью основания; при равной площади берётся упаковка с меньшей суммой длины и ширины.</li>
+        <li>Если подходящая упаковка не найдена, выводится сообщение «Подходящая упаковка не найдена. Минимум по расчёту: {длина} x {ширина} x {высота} мм (Д x Ш x В).».</li>
+        <li>Если упаковка найдена, выводится сообщение «Разместить на паллете {название} H={высота} мм Масса части {масса} кг».</li>
+      </ul>
+      <h4>2.5 Вывод сообщений</h4>
+      <p>Сообщения пользователю отображаются в блоке <code>&lt;pre id="out"&gt;</code>, рядом с которым расположена кнопка «Скопировать».</p>
+      <h4>2.6 Копирование</h4>
+      <p>Кнопка «Скопировать» копирует в буфер обмена строку результата. При отсутствии корректного результата кнопка недоступна.</p>
+    </section>
+
+    <section>
+      <h3>3. Набор упаковок</h3>
+      <ul>
+        <li>Каталог хранится в массиве объектов <code>BOXES</code> с полями <code>name</code>, <code>L</code> и <code>W</code> (мм).</li>
+        <li>Текущий набор упаковок:</li>
+      </ul>
+      <ul>
+        <li>1) ТДП.004.1.01.022 — 1250 × 850</li>
+        <li>2) ТДП.004.1.01.032 — 1800 × 850</li>
+        <li>3) ТДП.004.1.01.033 — 1800 × 1225</li>
+        <li>4) ТДП.004.1.01.034 — 1800 × 1600</li>
+        <li>5) ТДП.004.1.01.042 — 2350 × 850</li>
+        <li>6) ТДП.004.1.01.043 — 2350 × 1225</li>
+        <li>7) ТДП.004.1.01.044 — 2350 × 1650</li>
+        <li>8) ТДП.004.1.01.045 — 2350 × 1950</li>
+      </ul>
+      <p>Таблица доступных упаковок строится автоматически на основе массива и отображает значения длины и ширины в отсортированном порядке.</p>
+    </section>
+
+    <section>
+      <h3>4. Пользовательский интерфейс</h3>
+      <ul>
+        <li>Заголовок страницы – «Подбор упаковки».</li>
+        <li>Под формой расположена таблица с перечнем доступных упаковок и заголовками колонок «#», «Название», «Длина, мм», «Ширина, мм».</li>
+        <li>Таблица заполняется при загрузке страницы скриптом.</li>
+        <li>Результирующие сообщения и ошибки отображаются в блоке <code>&lt;pre id="out"&gt;</code>, который по умолчанию содержит подсказку «Введите данные для расчёта.».</li>
+        <li>Кнопка «Скопировать» располагается рядом с блоком результата и визуально соответствует стилистике страницы.</li>
+      </ul>
+    </section>
+  </template>
 </body>
 </html>
