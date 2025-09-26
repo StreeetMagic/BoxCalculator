@@ -27,6 +27,7 @@ const BOXES = [
 
 const form = document.getElementById('f');
 const output = document.getElementById('out');
+const copyButton = document.getElementById('copy');
 const inputs = Array.from(form.querySelectorAll('input'));
 
 form.addEventListener('submit', (event) => {
@@ -37,20 +38,32 @@ inputs.forEach((input) => {
   input.addEventListener('input', calculate);
 });
 
+copyButton.addEventListener('click', () => {
+  const text = output.textContent.trim();
+  if (!text || copyButton.disabled) {
+    return;
+  }
+  navigator.clipboard?.writeText(text).catch(() => {
+    /* ignore clipboard errors */
+  });
+});
+
 calculate();
 
 function calculate() {
   const values = inputs.map((input) => input.value.trim());
 
   if (values.some((value) => value === '')) {
-    showOut('Введите размеры для расчёта.');
+    showOut('Введите данные для расчёта.');
     return;
   }
 
-  const [sourceLength, sourceWidth, sourceHeight] = values.map((value) => parseInt(value, 10));
+  const [lengthValue, widthValue, heightValue, massValue] = values;
+  const [sourceLength, sourceWidth, sourceHeight] = [lengthValue, widthValue, heightValue].map((value) => parseInt(value, 10));
+  const mass = parseMass(massValue);
 
-  if (!isPositiveInteger(sourceLength) || !isPositiveInteger(sourceWidth) || !isPositiveInteger(sourceHeight)) {
-    showOut('Введите положительные целые значения.', 'error');
+  if (!isPositiveInteger(sourceLength) || !isPositiveInteger(sourceWidth) || !isPositiveInteger(sourceHeight) || !isPositiveNumber(mass)) {
+    showOut('Введите положительные значения. Используйте целые числа для габаритов и число больше нуля для массы.', 'error');
     return;
   }
 
@@ -75,22 +88,37 @@ function calculate() {
   if (!best) {
     const outLengthMin = Math.max(neededLength, neededWidth);
     const outWidthMin = Math.min(neededLength, neededWidth);
-    showOut(`Подходящая коробка не найдена.\nМинимум по расчёту: ${outLengthMin} x ${outWidthMin} x ${neededHeight} мм (Д x Ш x В).`, 'error');
+    showOut(`Подходящая упаковка не найдена.\nМинимум по расчёту: ${outLengthMin} x ${outWidthMin} x ${neededHeight} мм (Д x Ш x В).`, 'error');
     return;
   }
 
-  const outLength = Math.max(best.L, best.W);
-  const outWidth = Math.min(best.L, best.W);
-  showOut(`Подходящая коробка: ${best.name} — ${outLength} x ${outWidth} x ${neededHeight} мм (Д x Ш x В).`);
+  const massFormatted = formatMass(mass);
+  showOut(`Разместить на паллете ${best.name} H=${neededHeight} мм Масса части ${massFormatted} кг`, 'result');
+}
+
+function parseMass(value) {
+  if (typeof value !== 'string') return NaN;
+  const normalized = value.replace(',', '.');
+  return parseFloat(normalized);
+}
+
+function formatMass(value) {
+  return value.toLocaleString('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 }
 
 function isPositiveInteger(value) {
+  return Number.isFinite(value) && Number.isInteger(value) && value > 0;
+}
+
+function isPositiveNumber(value) {
   return Number.isFinite(value) && value > 0;
 }
 
 function showOut(text, variant = 'default') {
   output.textContent = text;
-  output.style.color = variant === 'error' ? 'var(--danger)' : 'var(--text-primary)';
+  const isError = variant === 'error';
+  output.style.color = isError ? 'var(--danger)' : 'var(--text-primary)';
+  copyButton.disabled = variant !== 'result';
 }
 
 function area(box) {

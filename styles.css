@@ -91,35 +91,48 @@ input[type="number"]:focus {
   box-shadow: 0 0 0 3px rgba(76, 125, 255, 0.25);
 }
 
-button[type="submit"] {
-  justify-self: start;
+.result {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.result pre {
+  margin: 0;
+  flex: 1 1 260px;
+  white-space: pre-line;
+  font-family: "JetBrains Mono", "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+  font-size: 1rem;
+}
+
+.result button {
   background: linear-gradient(135deg, var(--accent), #854cff);
   color: #fff;
   border: none;
-  border-radius: 999px;
-  padding: 0.9rem 2.4rem;
-  font-size: 1rem;
+  border-radius: 12px;
+  padding: 0.85rem 1.75rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
-button[type="submit"]:hover {
+.result button:hover:not(:disabled) {
   transform: translateY(-1px);
   filter: brightness(1.05);
   box-shadow: 0 15px 35px rgba(76, 125, 255, 0.35);
 }
 
-button[type="submit"]:active {
+.result button:active:not(:disabled) {
   transform: translateY(1px);
   box-shadow: none;
 }
 
-#out {
-  margin: 0;
-  white-space: pre-line;
-  font-family: "JetBrains Mono", "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
-  font-size: 1rem;
+.result button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  filter: grayscale(0.4);
 }
 
 #boxTable {
