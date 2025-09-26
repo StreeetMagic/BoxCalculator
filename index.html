@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Подбор коробки</title>
+  <title>Подбор упаковки</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main>
     <section>
-      <h1>Подбор коробки</h1>
-      <p class="lead">Введите размеры изделия, и мы подберём оптимальную коробку из каталога.</p>
+      <h1>Подбор упаковки</h1>
+      <p class="lead">Введите параметры изделия, и мы подберём оптимальную упаковку из каталога.</p>
     </section>
 
     <section class="card">
@@ -26,16 +26,22 @@
             <input id="h" type="number" min="1" step="1" inputmode="numeric" required>
           </label>
         </div>
+        <label for="m">Масса, кг
+          <input id="m" type="number" min="0" step="0.1" inputmode="decimal" required>
+        </label>
       </form>
     </section>
 
-    <section class="card">
-      <pre id="out">Введите размеры для расчёта.</pre>
+    <section class="card output-card">
+      <div class="output-row">
+        <pre id="out">Введите данные для расчёта.</pre>
+        <button id="copyBtn" type="button" disabled>Скопировать</button>
+      </div>
     </section>
 
     <section class="card">
       <table id="boxTable">
-        <caption>Каталог доступных коробок</caption>
+        <caption>Каталог доступных упаковок</caption>
         <thead>
           <tr><th>#</th><th>Название</th><th>Длина, мм</th><th>Ширина, мм</th></tr>
         </thead>
